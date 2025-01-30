@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ShopeeAPI.Modules.Owner.Entities;
+using ShopeeAPI.Modules.Owners.Entities;
 
 public class AppDbContext : DbContext
 {

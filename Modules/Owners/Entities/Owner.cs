@@ -1,4 +1,4 @@
-namespace ShopeeAPI.Modules.Owner.Entities;
+namespace ShopeeAPI.Modules.Owners.Entities;
 
 public class Owner
 {
