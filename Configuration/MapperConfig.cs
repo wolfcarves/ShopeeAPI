@@ -1,6 +1,5 @@
 using AutoMapper;
-using ShopeeAPI.Modules.Owners.DTO;
-using ShopeeAPI.Modules.Owners.Entities;
+using ShopeeAPI.Modules.Owners.Mapping;
 
 namespace ShopeeAPI.Configuration;
 
@@ -9,7 +8,7 @@ public class MapperConfig
     public static Mapper InitializeAutomapper()
     {
         var config = new MapperConfiguration(cfg =>
-            cfg.CreateMap<Owner, OwnerCreateDTO>()
+            cfg.AddProfile<OwnerProfile>()
         );
 
         var mapper = new Mapper(config);

@@ -1,23 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopeeAPI.Modules.Owners.Entities;
 using ShopeeAPI.Modules.Owners.Repositories;
+using ShopeeAPI.Modules.Owners.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class OwnerController : ControllerBase
 {
+    private readonly IOwnerService _ownerService;
 
-    private readonly IOwnerRepository _ownerRepo;
-
-    public OwnerController(IOwnerRepository ownerRepo)
+    public OwnerController(IOwnerService ownerService)
     {
-        _ownerRepo = ownerRepo;
+        _ownerService = ownerService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Owner>>> GetAllOwners()
+    public async Task<ActionResult<IEnumerable<Owner>>> GetOwners()
     {
-        var owners = await _ownerRepo.GetAllAsync();
+        var owners = await _ownerService.GetAllOwners();
         return Ok(owners);
     }
 

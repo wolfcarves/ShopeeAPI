@@ -17,7 +17,7 @@ public class OwnerRepository : IOwnerRepository
         return await _ctx.Owners.ToListAsync();
     }
 
-    public async Task<Owner> GetOneAsync(int ownerId)
+    public async Task<Owner> GetOneByIdAsync(int ownerId)
     {
         var owner = await _ctx.Owners.FindAsync(ownerId);
 
