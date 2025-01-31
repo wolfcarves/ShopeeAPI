@@ -9,5 +9,6 @@ public class OwnerProfile : Profile
     public OwnerProfile()
     {
         CreateMap<OwnerCreateDTO, Owner>();
+        CreateMap<OwnerUpdateDTO, Owner>();
     }
 }

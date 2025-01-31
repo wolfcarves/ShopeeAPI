@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShopeeAPI.Modules.Owners.DTO;
 using ShopeeAPI.Modules.Owners.Entities;
 
 namespace ShopeeAPI.Modules.Owners.Repositories;
@@ -17,11 +18,12 @@ public class OwnerRepository : IOwnerRepository
         return await _ctx.Owners.ToListAsync();
     }
 
-    public async Task<Owner> GetOneByIdAsync(int ownerId)
+    public async Task<Owner> GetOneByIdAsync(int id)
     {
-        var owner = await _ctx.Owners.FindAsync(ownerId);
 
-        if (owner == null) throw new KeyNotFoundException($"Owner with the id {ownerId} has not been found.s");
+        var owner = await _ctx.Owners.FindAsync(id);
+
+        if (owner == null) throw new KeyNotFoundException($"Owner with the id {id} has not been found");
 
         return owner;
     }
@@ -34,23 +36,23 @@ public class OwnerRepository : IOwnerRepository
         return data;
     }
 
-    public async Task<Owner> UpdateAsync(int ownerId, Owner data)
+    public async Task<Owner> UpdateAsync(int id, Owner data)
     {
-        var owner = await _ctx.Owners.FindAsync();
+        var owner = await _ctx.Owners.FirstOrDefaultAsync(item => item.Id == id);
 
-        if (owner == null) throw new KeyNotFoundException($"Owner with the id {ownerId} does not exists");
+        if (owner == null) throw new KeyNotFoundException($"Owner with the id {id} does not exists");
 
-        _ctx.Owners.Update(data);
+        owner.Fullname = data.Fullname;
         await _ctx.SaveChangesAsync();
 
-        return data;
+        return owner;
     }
 
-    public async Task<Owner> DeleteAsync(int ownerId)
+    public async Task<Owner> DeleteAsync(int id)
     {
-        var owner = await _ctx.Owners.FirstOrDefaultAsync(result => result.Id == ownerId);
+        var owner = await _ctx.Owners.FirstOrDefaultAsync(result => result.Id == id);
 
-        if (owner == null) throw new KeyNotFoundException($"Owner with the id {ownerId} does not exists");
+        if (owner == null) throw new KeyNotFoundException($"Owner with the id {id} does not exists");
 
         _ctx.Owners.Entry(owner).State = EntityState.Deleted;
 

@@ -22,28 +22,42 @@ public class OwnerService : IOwnerService
         return await _ownerRepository.GetAllAsync();
     }
 
-    public async Task<Owner> GetOneOwnerById(int ownerId)
+    public async Task<Owner> GetOneOwnerById(int id)
     {
-        return await _ownerRepository.GetOneByIdAsync(ownerId);
+        return await _ownerRepository.GetOneByIdAsync(id);
     }
 
-    public async Task<Owner> AddOwner(OwnerCreateDTO owner)
+    public async Task<Owner> AddOwner(OwnerCreateDTO ownerData)
     {
-        var createOwner = _mapper.Map<Owner>(owner);
+        if (ownerData == null)
+        {
+            throw new ArgumentNullException("Body cannot be null");
+        }
+
+        var createOwner = _mapper.Map<Owner>(ownerData);
         return await _ownerRepository.CreateAsync(createOwner);
     }
 
-    public async Task<Owner> UpdateOwner(int ownerId, OwnerUpdateDTO owner)
+    public async Task<Owner> UpdateOwner(int id, OwnerUpdateDTO ownerUpdatedData)
     {
-        var updateOwner = _mapper.Map<Owner>(owner);
+        if (id <= 0 || ownerUpdatedData == null)
+        {
+            throw new ArgumentNullException("Request resource cannot be null");
+        }
 
-        await _ownerRepository.GetOneByIdAsync(ownerId);
+        var owner = await _ownerRepository.GetOneByIdAsync(id);
 
-        return await _ownerRepository.CreateAsync(updateOwner);
+        var updateOwner = new Owner
+        {
+            Fullname = ownerUpdatedData.Fullname,
+            Username = owner.Username
+        };
+
+        return await _ownerRepository.UpdateAsync(id, updateOwner);
     }
 
-    public async Task<Owner> DeleteOwner(int ownerId)
+    public async Task<Owner> DeleteOwner(int id)
     {
-        return await _ownerRepository.DeleteAsync(ownerId);
+        return await _ownerRepository.DeleteAsync(id);
     }
 }
