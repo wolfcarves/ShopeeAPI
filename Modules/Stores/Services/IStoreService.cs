@@ -7,5 +7,6 @@ public interface IStoreService
 {
     Task<IEnumerable<Store>> GetAllStores();
     Task<Store> AddStore(StoreCreateDTO store);
+    Task<Store> GetStore(int storeId);
 }
 

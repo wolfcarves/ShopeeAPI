@@ -20,10 +20,9 @@ public class OwnerRepository : IOwnerRepository
 
     public async Task<Owner> GetOneByIdAsync(int id)
     {
-
         var owner = await _ctx.Owners.FindAsync(id);
 
-        if (owner == null) throw new KeyNotFoundException($"Owner with the id {id} has not been found");
+        if (owner == null) throw new KeyNotFoundException($"Owner doesn't exists");
 
         return owner;
     }

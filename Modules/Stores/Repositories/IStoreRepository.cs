@@ -6,4 +6,5 @@ public interface IStoreRepository
 {
     Task<IEnumerable<Store>> GetAllAsync();
     Task<Store> CreateAsync(Store store);
+    Task<Store> GetOneByIdAsync(int storeId);
 }

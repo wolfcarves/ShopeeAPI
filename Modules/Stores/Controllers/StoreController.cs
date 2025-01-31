@@ -28,12 +28,11 @@ public class StoreController : ControllerBase
     {
         try
         {
-            var createdStore = await _storeService.AddStore(body);
-            return createdStore;
+            return await _storeService.AddStore(body);
         }
-        catch (ArgumentNullException ex)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return NotFound(new { message = ex.Message });
         }
     }
 
