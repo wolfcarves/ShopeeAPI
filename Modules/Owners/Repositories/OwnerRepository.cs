@@ -50,13 +50,13 @@ public class OwnerRepository : IOwnerRepository
         return data;
     }
 
-    public async Task<Owner> UpdateAsync(int id, Owner data)
+    public async Task<Owner?> UpdateAsync(int id, Owner data)
     {
         var owner = await _ctx.Owners.FirstOrDefaultAsync(item => item.Id == id);
 
-        if (owner == null) throw new KeyNotFoundException($"Owner with the id {id} does not exists");
+        if (owner != null)
+            owner.Fullname = data.Fullname;
 
-        owner.Fullname = data.Fullname;
         await _ctx.SaveChangesAsync();
 
         return owner;

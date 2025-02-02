@@ -8,5 +8,7 @@ public interface IStoreRepository
     Task<IEnumerable<Store>> GetAllAsync();
     Task<Store> CreateAsync(Store store);
     Task<StoreDTO?> GetOneByIdAsync(int storeId);
+    Task<StoreDTO> UpdateAsync(int storeId, StoreUpdateDTO data);
+
     Task<Store> DeleteAsync(int storeId);
 }

@@ -9,6 +9,6 @@ public interface IOwnerRepository
     Task<Owner?> GetOneByIdAsync(int ownerId);
     Task<Owner?> GetOneByUsernameAsync(string username);
     Task<Owner> CreateAsync(Owner owner);
-    Task<Owner> UpdateAsync(int ownerId, Owner owner);
+    Task<Owner?> UpdateAsync(int ownerId, Owner owner);
     Task<Owner> DeleteAsync(int ownerId);
 }

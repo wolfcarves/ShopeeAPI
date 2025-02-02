@@ -22,9 +22,12 @@ public class StoreService : IStoreService
         _mapper = MapperConfig.InitializeAutomapper();
     }
 
-    public async Task<IEnumerable<Store>> GetAllStores()
+    public async Task<IEnumerable<StoreDTO>> GetAllStores()
     {
-        return await _storeRepository.GetAllAsync();
+        var stores = await _storeRepository.GetAllAsync();
+        var storesDto = _mapper.Map<IEnumerable<StoreDTO>>(stores);
+
+        return storesDto;
     }
 
     public async Task<StoreDTO> AddStore(StoreCreateDTO createStoreData)
@@ -51,6 +54,14 @@ public class StoreService : IStoreService
         return store;
     }
 
+    public async Task<StoreDTO?> UpdateStore(int storeId, StoreUpdateDTO data)
+    {
+        await GetStoreById(storeId);
+        var updatedStore = await _storeRepository.UpdateAsync(storeId, data);
+
+        return updatedStore;
+    }
+
     public async Task<StoreDTO> DeleteStore(int storeId)
     {
         await GetStoreById(storeId);
@@ -60,6 +71,4 @@ public class StoreService : IStoreService
 
         return deletedStoreDto;
     }
-
-
 }

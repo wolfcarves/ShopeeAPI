@@ -38,6 +38,18 @@ public class StoreRepository : IStoreRepository
             .FirstOrDefaultAsync(result => result.Id == storeId);
     }
 
+    public async Task<StoreDTO?> UpdateAsync(int storeId, StoreUpdateDTO data)
+    {
+        var store = await GetOneByIdAsync(storeId);
+
+        if (store != null) store.Name = data.Name;
+
+        await _ctx.SaveChangesAsync();
+
+        return store;
+
+    }
+
     public async Task<Store> DeleteAsync(int storeId)
     {
         var store = await _ctx.Stores.FindAsync(storeId);

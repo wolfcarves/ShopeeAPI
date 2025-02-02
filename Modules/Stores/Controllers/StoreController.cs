@@ -57,6 +57,20 @@ public class StoreController : ControllerBase
         }
     }
 
+    [HttpPatch("{storeId}")]
+    public async Task<ActionResult<StoreDTO>> UpdateStore(int storeId, StoreUpdateDTO data)
+    {
+        try
+        {
+            var updatedStore = await _storeService.UpdateStore(storeId, data);
+            return Ok(updatedStore);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
     [HttpDelete("{storeId}")]
     public async Task<ActionResult<StoreDTO>> DeleteStore(int storeId)
     {
