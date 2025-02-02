@@ -20,7 +20,7 @@ public class StoreRepository : IStoreRepository
 
     public async Task<Store> CreateAsync(Store store)
     {
-        await _ctx.AddAsync(store);
+        await _ctx.Stores.AddAsync(store);
         await _ctx.SaveChangesAsync();
 
         return store;
@@ -36,6 +36,17 @@ public class StoreRepository : IStoreRepository
                 Name = s.Name,
             })
             .FirstOrDefaultAsync(result => result.Id == storeId);
+    }
+
+    public async Task<Store> DeleteAsync(int storeId)
+    {
+        var store = await _ctx.Stores.FindAsync(storeId);
+
+        _ctx.Stores.Entry(store).State = EntityState.Deleted;
+
+        await _ctx.SaveChangesAsync();
+
+        return store;
     }
 
 

@@ -17,9 +17,6 @@ public class OwnerController : ControllerBase
     public async Task<ActionResult<IEnumerable<OwnerDTO>>> GetOwners()
     {
         var owners = await _ownerService.GetAllOwners();
-
-        if (!owners.Any()) return NotFound(new { statusCode = 404, message = "No owners to fetch" });
-
         return Ok(owners);
     }
 
@@ -29,7 +26,7 @@ public class OwnerController : ControllerBase
         try
         {
             var createdOwner = await _ownerService.AddOwner(body);
-            return CreatedAtAction(nameof(GetOwner), new { id = createdOwner.Id }, createdOwner);
+            return CreatedAtAction(nameof(GetOwner), new { ownerId = createdOwner.Id }, createdOwner);
         }
         catch (InvalidOperationException ex)
         {

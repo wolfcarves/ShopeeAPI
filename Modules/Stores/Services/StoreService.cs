@@ -1,4 +1,3 @@
-using System.Text.Json;
 using AutoMapper;
 using ShopeeAPI.Configuration;
 using ShopeeAPI.Modules.Owners.Repositories;
@@ -23,21 +22,24 @@ public class StoreService : IStoreService
         _mapper = MapperConfig.InitializeAutomapper();
     }
 
-
     public async Task<IEnumerable<Store>> GetAllStores()
     {
         return await _storeRepository.GetAllAsync();
     }
 
-    public async Task<Store> AddStore(StoreCreateDTO createStoreData)
+    public async Task<StoreDTO> AddStore(StoreCreateDTO createStoreData)
     {
         var owner = await _ownerRepository.GetOneByIdAsync(createStoreData.OwnerId);
 
-        if (owner.Store != null) throw new InvalidOperationException($"{owner.Fullname} has a store already");
+        if (owner == null) throw new KeyNotFoundException($"Owner does not exist");
+        if (owner?.Store != null) throw new InvalidOperationException($"{owner.Fullname} has a store already");
 
         var store = _mapper.Map<Store>(createStoreData);
 
-        return await _storeRepository.CreateAsync(store);
+        var createdStore = await _storeRepository.CreateAsync(store);
+        var createdStoreDto = _mapper.Map<StoreDTO>(createdStore);
+
+        return createdStoreDto;
     }
 
     public async Task<StoreDTO?> GetStoreById(int storeId)
@@ -47,6 +49,16 @@ public class StoreService : IStoreService
         if (store == null) throw new KeyNotFoundException("Store not found");
 
         return store;
+    }
+
+    public async Task<StoreDTO> DeleteStore(int storeId)
+    {
+        await GetStoreById(storeId);
+
+        var deletedStore = await _storeRepository.DeleteAsync(storeId);
+        var deletedStoreDto = _mapper.Map<StoreDTO>(deletedStore);
+
+        return deletedStoreDto;
     }
 
 

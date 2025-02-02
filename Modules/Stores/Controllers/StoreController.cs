@@ -19,10 +19,10 @@ public class StoreController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Store>>> GetStores()
+    public async Task<ActionResult<IEnumerable<StoreDTO>>> GetStores()
     {
-        var result = await _storeService.GetAllStores();
-        return Ok(result);
+        var stores = await _storeService.GetAllStores();
+        return Ok(stores);
     }
 
     [HttpPost]
@@ -50,6 +50,20 @@ public class StoreController : ControllerBase
         {
             var store = await _storeService.GetStoreById(storeId);
             return Ok(store);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpDelete("{storeId}")]
+    public async Task<ActionResult<StoreDTO>> DeleteStore(int storeId)
+    {
+        try
+        {
+            var deletedStore = await _storeService.DeleteStore(storeId);
+            return deletedStore;
         }
         catch (KeyNotFoundException ex)
         {

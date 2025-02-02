@@ -7,4 +7,5 @@ public class OwnerDTO
     public int Id { get; set; }
     public required string Fullname { get; set; }
     public required string Username { get; set; }
+    public StoreDTO? Store { get; set; }
 }

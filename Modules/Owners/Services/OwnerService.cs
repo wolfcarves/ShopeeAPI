@@ -20,12 +20,12 @@ public class OwnerService : IOwnerService
     public async Task<IEnumerable<OwnerDTO>> GetAllOwners()
     {
         var owners = await _ownerRepository.GetAllAsync();
-        var ownersDto = _mapper.Map<IEnumerable<OwnerDTO>>(owners);
+        // var ownersDto = _mapper.Map<IEnumerable<OwnerDTO>>(owners);
 
-        return ownersDto;
+        return owners;
     }
 
-    public async Task<OwnerDTO> GetOneOwnerById(int id)
+    public async Task<OwnerDTO?> GetOneOwnerById(int id)
     {
         var owner = await _ownerRepository.GetOneByIdAsync(id);
 
@@ -42,7 +42,7 @@ public class OwnerService : IOwnerService
 
         if (existingOwner != null)
         {
-            throw new InvalidOperationException("Username already exists");
+            throw new InvalidOperationException($"Username '{ownerData.Username}' already exists");
         }
 
         var createOwnerData = _mapper.Map<Owner>(ownerData);

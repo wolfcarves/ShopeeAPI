@@ -5,7 +5,7 @@ namespace ShopeeAPI.Modules.Owners.Repositories;
 
 public interface IOwnerRepository
 {
-    Task<IEnumerable<Owner>> GetAllAsync();
+    Task<IEnumerable<OwnerDTO>> GetAllAsync();
     Task<Owner?> GetOneByIdAsync(int ownerId);
     Task<Owner?> GetOneByUsernameAsync(string username);
     Task<Owner> CreateAsync(Owner owner);

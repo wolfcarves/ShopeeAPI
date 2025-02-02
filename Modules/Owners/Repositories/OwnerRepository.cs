@@ -1,25 +1,38 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ShopeeAPI.Configuration;
+using ShopeeAPI.Modules.Owners.DTO;
 using ShopeeAPI.Modules.Owners.Entities;
+using ShopeeAPI.Modules.Stores.DTO;
 
 namespace ShopeeAPI.Modules.Owners.Repositories;
 
 public class OwnerRepository : IOwnerRepository
 {
     private readonly AppDbContext _ctx;
+    private readonly IMapper _mapper;
 
     public OwnerRepository(AppDbContext ctx)
     {
         _ctx = ctx;
+        _mapper = MapperConfig.InitializeAutomapper();
     }
 
-    public async Task<IEnumerable<Owner>> GetAllAsync()
+    public async Task<IEnumerable<OwnerDTO>> GetAllAsync()
     {
-        return await _ctx.Owners.ToListAsync();
+        var owners = await _ctx.Owners
+            .Include(o => o.Store)
+            .Select(o => _mapper.Map<OwnerDTO>(o))
+            .ToListAsync();
+
+        return owners;
     }
 
     public async Task<Owner?> GetOneByIdAsync(int ownerId)
     {
-        var owner = await _ctx.Owners.FirstOrDefaultAsync(result => result.Id == ownerId);
+        var owner = await _ctx.Owners
+            .Include(o => o.Store)
+            .FirstOrDefaultAsync(result => result.Id == ownerId);
         return owner;
     }
 
