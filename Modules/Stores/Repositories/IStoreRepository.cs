@@ -1,3 +1,4 @@
+using ShopeeAPI.Modules.Stores.DTO;
 using ShopeeAPI.Modules.Stores.Entities;
 
 namespace ShopeeAPI.Modules.Stores.Repositories;
@@ -6,5 +7,5 @@ public interface IStoreRepository
 {
     Task<IEnumerable<Store>> GetAllAsync();
     Task<Store> CreateAsync(Store store);
-    Task<Store> GetOneByIdAsync(int storeId);
+    Task<StoreDTO?> GetOneByIdAsync(int storeId);
 }

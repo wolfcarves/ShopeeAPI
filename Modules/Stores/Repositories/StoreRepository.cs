@@ -26,13 +26,16 @@ public class StoreRepository : IStoreRepository
         return store;
     }
 
-    public async Task<Store> GetOneByIdAsync(int storeId)
+    public async Task<StoreDTO?> GetOneByIdAsync(int storeId)
     {
-        var store = await _ctx.Stores.FindAsync(storeId);
-
-        if (store == null) throw new KeyNotFoundException($"Store with the id {storeId} does not exists");
-
-        return store;
+        return await _ctx.Stores
+            .Include(s => s.Owner)
+            .Select(s => new StoreDTO
+            {
+                Id = s.Id,
+                Name = s.Name,
+            })
+            .FirstOrDefaultAsync(result => result.Id == storeId);
     }
 
 

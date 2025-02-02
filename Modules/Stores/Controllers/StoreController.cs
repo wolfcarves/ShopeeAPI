@@ -10,10 +10,12 @@ namespace ShopeeAPI.Modules.Products.Controllers;
 public class StoreController : ControllerBase
 {
     private readonly IStoreService _storeService;
+    private readonly ILogger<StoreController> _logger;
 
-    public StoreController(IStoreService storeService)
+    public StoreController(IStoreService storeService, ILogger<StoreController> logger)
     {
         _storeService = storeService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -28,13 +30,30 @@ public class StoreController : ControllerBase
     {
         try
         {
-            return await _storeService.AddStore(body);
+            var store = await _storeService.AddStore(body);
+            return Ok(store);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("{storeId}")]
+    public async Task<ActionResult<StoreDTO?>> GetStore(int storeId)
+    {
+        try
+        {
+            var store = await _storeService.GetStoreById(storeId);
+            return Ok(store);
         }
         catch (KeyNotFoundException ex)
         {
             return NotFound(new { message = ex.Message });
         }
     }
-
-
 }

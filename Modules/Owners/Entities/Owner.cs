@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ShopeeAPI.Modules.Owners.DTO;
 using ShopeeAPI.Modules.Stores.Entities;
 
 namespace ShopeeAPI.Modules.Owners.Entities;

@@ -3,6 +3,7 @@ using ShopeeAPI.Modules.Owners.Mapping;
 using ShopeeAPI.Modules.Stores.Mapping;
 
 namespace ShopeeAPI.Configuration;
+
 public class MapperConfig
 {
     public static Mapper InitializeAutomapper()

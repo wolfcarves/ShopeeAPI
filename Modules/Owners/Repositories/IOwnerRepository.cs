@@ -1,3 +1,4 @@
+using ShopeeAPI.Modules.Owners.DTO;
 using ShopeeAPI.Modules.Owners.Entities;
 
 namespace ShopeeAPI.Modules.Owners.Repositories;
@@ -5,8 +6,9 @@ namespace ShopeeAPI.Modules.Owners.Repositories;
 public interface IOwnerRepository
 {
     Task<IEnumerable<Owner>> GetAllAsync();
-    Task<Owner> GetOneByIdAsync(int id);
+    Task<Owner?> GetOneByIdAsync(int ownerId);
+    Task<Owner?> GetOneByUsernameAsync(string username);
     Task<Owner> CreateAsync(Owner owner);
-    Task<Owner> UpdateAsync(int id, Owner owner);
-    Task<Owner> DeleteAsync(int id);
+    Task<Owner> UpdateAsync(int ownerId, Owner owner);
+    Task<Owner> DeleteAsync(int ownerId);
 }

@@ -1,26 +1,27 @@
 using Microsoft.EntityFrameworkCore;
-using ShopeeAPI.Configuration;
-using ShopeeAPI.Modules.Owners.Repositories;
-using ShopeeAPI.Modules.Owners.Services;
-using ShopeeAPI.Modules.Stores.Repositories;
-using ShopeeAPI.Modules.Stores.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var mapper = MapperConfig.InitializeAutomapper();
+var services = builder.Services;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddControllers()
+    .AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+        }
+    );
 
-builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
-builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
-builder.Services.AddScoped<IOwnerService, OwnerService>();
+services.AddRouting(opt => opt.LowercaseUrls = true);
+services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IStoreRepository, StoreRepository>();
-builder.Services.AddScoped<IStoreService, StoreService>();
+
+services.AddApplicationServices();
+services.AddLogging();
+
 
 var app = builder.Build();
 

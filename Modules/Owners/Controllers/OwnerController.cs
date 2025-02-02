@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopeeAPI.Modules.Owners.DTO;
-using ShopeeAPI.Modules.Owners.Entities;
 using ShopeeAPI.Modules.Owners.Services;
 
 [ApiController]
@@ -15,33 +14,51 @@ public class OwnerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Owner>>> GetOwners()
+    public async Task<ActionResult<IEnumerable<OwnerDTO>>> GetOwners()
     {
         var owners = await _ownerService.GetAllOwners();
+
+        if (!owners.Any()) return NotFound(new { statusCode = 404, message = "No owners to fetch" });
+
         return Ok(owners);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Owner>> CreateOwner(OwnerCreateDTO body)
+    public async Task<ActionResult<OwnerDTO>> CreateOwner(OwnerCreateDTO body)
     {
         try
         {
             var createdOwner = await _ownerService.AddOwner(body);
             return CreatedAtAction(nameof(GetOwner), new { id = createdOwner.Id }, createdOwner);
         }
-        catch (ArgumentNullException ex)
+        catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return Conflict(new { statusCode = 409, message = ex.Message });
         }
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Owner>> GetOwner(int id)
+    [HttpGet("{ownerId}")]
+    public async Task<ActionResult<OwnerDTO>> GetOwner(int ownerId)
     {
         try
         {
-            var owner = await _ownerService.GetOneOwnerById(id);
+            var owner = await _ownerService.GetOneOwnerById(ownerId);
             return Ok(owner);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { statusCode = 404, message = ex.Message });
+        }
+    }
+
+    [HttpPatch("{ownerId}")]
+    public async Task<ActionResult<OwnerDTO>> UpdateOwnerFullName(int ownerId, OwnerUpdateDTO ownerUpdatedData)
+    {
+        try
+        {
+            var updatedOwner = await _ownerService.UpdateOwner(ownerId, ownerUpdatedData);
+
+            return CreatedAtAction(nameof(GetOwner), new { ownerId = updatedOwner.Id }, updatedOwner);
         }
         catch (KeyNotFoundException ex)
         {
@@ -49,14 +66,13 @@ public class OwnerController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}")]
-    public async Task<ActionResult<Owner>> UpdateOwnerFullName(int id, OwnerUpdateDTO ownerUpdatedData)
+    [HttpDelete("{ownerId}")]
+    public async Task<ActionResult<OwnerDTO>> DeleteOwner(int ownerId)
     {
         try
         {
-            var updatedOwner = await _ownerService.UpdateOwner(id, ownerUpdatedData);
-
-            return CreatedAtAction(nameof(GetOwner), new { id = updatedOwner.Id }, updatedOwner);
+            var deletedOwner = await _ownerService.DeleteOwner(ownerId);
+            return Ok(deletedOwner);
         }
         catch (KeyNotFoundException ex)
         {

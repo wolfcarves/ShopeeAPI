@@ -17,35 +17,46 @@ public class OwnerService : IOwnerService
         _mapper = MapperConfig.InitializeAutomapper();
     }
 
-    public async Task<IEnumerable<Owner>> GetAllOwners()
+    public async Task<IEnumerable<OwnerDTO>> GetAllOwners()
     {
-        return await _ownerRepository.GetAllAsync();
+        var owners = await _ownerRepository.GetAllAsync();
+        var ownersDto = _mapper.Map<IEnumerable<OwnerDTO>>(owners);
+
+        return ownersDto;
     }
 
-    public async Task<Owner> GetOneOwnerById(int id)
+    public async Task<OwnerDTO> GetOneOwnerById(int id)
     {
-        return await _ownerRepository.GetOneByIdAsync(id);
-    }
-
-    public async Task<Owner> AddOwner(OwnerCreateDTO ownerData)
-    {
-        if (ownerData == null)
-        {
-            throw new ArgumentNullException("Body cannot be null");
-        }
-
-        var createOwner = _mapper.Map<Owner>(ownerData);
-        return await _ownerRepository.CreateAsync(createOwner);
-    }
-
-    public async Task<Owner> UpdateOwner(int id, OwnerUpdateDTO ownerUpdatedData)
-    {
-        if (id <= 0 || ownerUpdatedData == null)
-        {
-            throw new ArgumentNullException("Request resource cannot be null");
-        }
-
         var owner = await _ownerRepository.GetOneByIdAsync(id);
+
+        if (owner == null) throw new KeyNotFoundException("This owner doesn't exists");
+
+        var ownerDto = _mapper.Map<OwnerDTO>(owner);
+
+        return ownerDto;
+    }
+
+    public async Task<OwnerDTO> AddOwner(OwnerCreateDTO ownerData)
+    {
+        var existingOwner = await _ownerRepository.GetOneByUsernameAsync(ownerData.Username);
+
+        if (existingOwner != null)
+        {
+            throw new InvalidOperationException("Username already exists");
+        }
+
+        var createOwnerData = _mapper.Map<Owner>(ownerData);
+        var createdOwnerDto = await _ownerRepository.CreateAsync(createOwnerData);
+        var ownerDto = _mapper.Map<OwnerDTO>(createdOwnerDto);
+
+        return ownerDto;
+    }
+
+    public async Task<OwnerDTO> UpdateOwner(int ownerId, OwnerUpdateDTO ownerUpdatedData)
+    {
+        var owner = await _ownerRepository.GetOneByIdAsync(ownerId);
+
+        if (owner == null) throw new KeyNotFoundException($"Owner doesn't exists");
 
         var updateOwner = new Owner
         {
@@ -53,11 +64,18 @@ public class OwnerService : IOwnerService
             Username = owner.Username
         };
 
-        return await _ownerRepository.UpdateAsync(id, updateOwner);
+        var updatedOwner = await _ownerRepository.UpdateAsync(ownerId, updateOwner);
+        var ownerDto = _mapper.Map<OwnerDTO>(updatedOwner);
+
+        return ownerDto;
     }
 
-    public async Task<Owner> DeleteOwner(int id)
+    public async Task<OwnerDTO> DeleteOwner(int ownerId)
     {
-        return await _ownerRepository.DeleteAsync(id);
+        await GetOneOwnerById(ownerId);
+
+        var deletedOwner = await _ownerRepository.DeleteAsync(ownerId);
+        var deletedOwnerDto = _mapper.Map<OwnerDTO>(deletedOwner);
+        return deletedOwnerDto;
     }
 }

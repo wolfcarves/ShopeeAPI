@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ShopeeAPI.Modules.Owners.DTO;
 using ShopeeAPI.Modules.Owners.Entities;
 
 namespace ShopeeAPI.Modules.Owners.Repositories;
@@ -18,12 +17,15 @@ public class OwnerRepository : IOwnerRepository
         return await _ctx.Owners.ToListAsync();
     }
 
-    public async Task<Owner> GetOneByIdAsync(int id)
+    public async Task<Owner?> GetOneByIdAsync(int ownerId)
     {
-        var owner = await _ctx.Owners.FindAsync(id);
+        var owner = await _ctx.Owners.FirstOrDefaultAsync(result => result.Id == ownerId);
+        return owner;
+    }
 
-        if (owner == null) throw new KeyNotFoundException($"Owner doesn't exists");
-
+    public async Task<Owner?> GetOneByUsernameAsync(string username)
+    {
+        var owner = await _ctx.Owners.FirstOrDefaultAsync(result => result.Username == username);
         return owner;
     }
 
@@ -59,4 +61,6 @@ public class OwnerRepository : IOwnerRepository
 
         return owner;
     }
+
+
 }

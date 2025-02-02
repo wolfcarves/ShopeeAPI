@@ -8,6 +8,7 @@ public class OwnerProfile : Profile
 {
     public OwnerProfile()
     {
+        CreateMap<Owner, OwnerDTO>();
         CreateMap<OwnerCreateDTO, Owner>();
         CreateMap<OwnerUpdateDTO, Owner>();
     }

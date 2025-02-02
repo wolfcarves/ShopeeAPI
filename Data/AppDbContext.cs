@@ -14,10 +14,15 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // ---- OWNER ---- //
         modelBuilder.Entity<Owner>()
             .HasOne(o => o.Store)
             .WithOne(o => o.Owner)
             .HasForeignKey<Store>(s => s.OwnerId)
             .IsRequired();
+
+        modelBuilder.Entity<Owner>()
+            .HasIndex(o => o.Username)
+            .IsUnique();
     }
 }
